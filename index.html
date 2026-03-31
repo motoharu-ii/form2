@@ -1,145 +1,464 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>打ち合わせ調整サービス</title>
-  <style>
-    body {
-      font-family: 'Noto Sans JP', sans-serif;
-      background-color: #f7f5f3;
-      color: #333;
-      margin: 0;
-      padding: 40px 20px;
-      display: flex;
-      justify-content: center;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>jinjer勤怠 仕様サマリー ＆ 無料デモ申し込み</title>
+<style>
+  :root {
+    --primary: #005A9E;     /* 信頼感のあるブルー */
+    --primary-dark: #003F70;
+    --secondary: #F3F8FB;   /* 背景用の薄いブルー */
+    --text-main: #333333;
+    --border: #E1DFDD;
+    --alert: #FFF4CE;
+    --alert-border: #FADB14;
+    --cta-color: #E60012;   /* 目を引くアクセントレッド */
+    --cta-hover: #C90010;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--text-main);
+    line-height: 1.6;
+    background-color: #F8F9FA;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 90px; /* CTAボタン用の余白 */
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #ffffff;
+    padding: 30px 20px;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0 0 10px 0;
+    font-size: 1.8em;
+  }
+  header p {
+    margin: 0;
+    font-size: 1.05em;
+    opacity: 0.9;
+  }
+  .container {
+    max-width: 800px;
+    margin: -20px auto 30px;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    position: relative;
+    z-index: 10;
+  }
+  
+  /* サマリー用スタイル */
+  h2 {
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 8px;
+    margin-top: 40px;
+    font-size: 1.4em;
+  }
+  .card {
+    background: var(--secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: var(--primary);
+    margin-bottom: 10px;
+  }
+  ul.list { padding-left: 20px; margin: 0; }
+  ul.list li { margin-bottom: 8px; }
+  figure { margin: 20px 0; text-align: center; }
+  figure img, figure svg { max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+  figcaption { margin-top: 8px; font-size: 0.9em; color: #666; }
+
+  /* 記事内誘導バナー（プレCTA） */
+  .cta-banner {
+    background: linear-gradient(135deg, #005A9E, #003F70);
+    color: #fff;
+    padding: 40px 30px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 50px;
+    box-shadow: 0 6px 20px rgba(0, 90, 158, 0.2);
+  }
+  .cta-banner h3 { 
+    margin-top: 0; 
+    color: #fff; 
+    border-bottom: none; 
+    font-size: 1.4em;
+  }
+  .cta-banner p { 
+    margin-bottom: 25px; 
+    font-size: 1em;
+    line-height: 1.8;
+  }
+  .btn-in-banner {
+    background-color: var(--cta-color);
+    color: #fff;
+    padding: 16px 36px;
+    border-radius: 50px;
+    font-size: 1.15em;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s, transform 0.2s;
+    box-shadow: 0 4px 10px rgba(230, 0, 18, 0.3);
+  }
+  .btn-in-banner:hover { 
+    background-color: var(--cta-hover); 
+    transform: translateY(-2px);
+  }
+
+  /* フォーム用スタイル */
+  .form-group { margin-bottom: 24px; }
+  .form-label { display: flex; align-items: center; font-weight: bold; margin-bottom: 8px; }
+  .required { color: #E60012; font-size: 0.85em; margin-left: 8px; font-weight: normal; }
+  .note { font-size: 0.85em; color: #666; margin-bottom: 8px; }
+  input[type="text"], input[type="email"], input[type="tel"], select {
+    width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px;
+  }
+  input:focus, select:focus { border-color: var(--primary); outline: none; }
+  button.submit-btn {
+    width: 100%; padding: 18px; background-color: var(--cta-color); color: #fff; border: none; border-radius: 50px; font-size: 1.2em; font-weight: bold; cursor: pointer; margin-top: 20px; transition: background-color 0.2s, transform 0.2s; box-shadow: 0 4px 10px rgba(230, 0, 18, 0.3);
+  }
+  button.submit-btn:hover { 
+    background-color: var(--cta-hover);
+    transform: translateY(-2px);
+  }
+  .terms-text { font-size: 0.75em; color: #666; text-align: center; margin-top: 16px; line-height: 1.5; }
+  .terms-text a { color: var(--primary); text-decoration: underline; }
+  .back-btn {
+    background: none; border: none; color: var(--primary); font-size: 1em; text-decoration: underline; cursor: pointer; padding: 0; margin-bottom: 25px; display: inline-flex; align-items: center; gap: 4px;
+  }
+
+  /* フローティングCTAとアニメーション */
+  @keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 4px 15px rgba(230, 0, 18, 0.4); }
+    50% { transform: scale(1.03); box-shadow: 0 6px 20px rgba(230, 0, 18, 0.6); }
+    100% { transform: scale(1); box-shadow: 0 4px 15px rgba(230, 0, 18, 0.4); }
+  }
+  .floating-cta {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: var(--cta-color);
+    color: #fff;
+    padding: 18px 36px;
+    border-radius: 50px;
+    font-size: 1.15em;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: pulse 2.5s infinite;
+  }
+  .floating-cta:hover {
+    background-color: var(--cta-hover);
+    animation: none; /* ホバー時はアニメーション停止 */
+    transform: translateY(-2px);
+  }
+
+  /* スマホ向け調整 */
+  @media (max-width: 600px) {
+    header { padding: 20px 15px; }
+    header h1 { font-size: 1.4em; }
+    header p { font-size: 0.95em; }
+    .container { padding: 20px 15px; margin: -15px 10px 30px; }
+    h2 { font-size: 1.25em; margin-top: 30px; }
+    .cta-banner { padding: 25px 15px; margin-top: 40px; }
+    .cta-banner h3 { font-size: 1.25em; line-height: 1.4; }
+    .cta-banner p { font-size: 0.95em; margin-bottom: 20px; }
+    .btn-in-banner { width: 100%; padding: 14px 20px; font-size: 1.05em; justify-content: center; box-sizing: border-box; }
+    .floating-cta {
+      bottom: 15px; right: 15px; left: 15px; width: calc(100% - 30px); justify-content: center; box-sizing: border-box; padding: 14px 15px; font-size: 1.05em;
     }
-    .form-container {
-      background-color: #fff;
-      padding: 40px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      max-width: 500px;
-      width: 100%;
-    }
-    .form-group {
-      margin-bottom: 24px;
-    }
-    label {
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-    .required {
-      color: #d24d14;
-      font-size: 0.85em;
-      margin-left: 8px;
-      font-weight: normal;
-    }
-    .note {
-      font-size: 0.85em;
-      color: #666;
-      margin-bottom: 8px;
-    }
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-      font-size: 16px;
-    }
-    input[type="text"]:focus,
-    input[type="email"]:focus,
-    input[type="tel"]:focus,
-    select:focus {
-      border-color: #1b6ef3;
-      outline: none;
-    }
-    button.submit-btn {
-      width: 100%;
-      padding: 14px;
-      background-color: #de2d2d;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background-color 0.2s;
-    }
-    button.submit-btn:hover {
-      background-color: #b90a0a;
-    }
-    .terms-text {
-      font-size: 0.75em;
-      color: #666;
-      text-align: center;
-      margin-top: 16px;
-      line-height: 1.5;
-    }
-    a { color: #1b6ef3; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-  </style>
+    body { padding-bottom: 80px; }
+  }
+</style>
 </head>
 <body>
 
-  <div class="form-container">
-    <h2>打ち合わせ調整サービス</h2>
-    <p class="note">こちらのフォームにお客様の情報を入力してください。<br>日程の調整やサービス提供企業から的確なご案内ができるよう、お電話にて5分ほどお話を伺わせてください。</p>
+  <!-- ===============================
+       1ページ目：仕様サマリー
+       =============================== -->
+  <div id="page1">
+    <header>
+      <h1>jinjer勤怠 ざっくり仕様まとめ</h1>
+      <p>自社に合うか即判断！実運用で知っておくべきポイント</p>
+    </header>
 
-    <form action="https://script.google.com/macros/s/AKfycbxIfQ64xCq1_71OjfqHi0Q_rSzff7fc40v1hyMCuSOplFqzju1IwAaQPZ8fSo5VB5xwaA/exec" method="POST">
+    <div class="container">
+      <h2>1. 自動集計とデータ出力</h2>
+      <div class="card">
+        <div class="card-title">💡 何をしてくれるのか？</div>
+        <ul class="list">
+          <li>打刻データから、残業や深夜労働を<b>リアルタイムで自動計算</b>してくれます。</li>
+          <li>締め日時点のデータをExcelで一括ダウンロードできます。</li>
+        </ul>
+      </div>
+
+      <figure>
+        <img src="https://hcm-jinjer.com/wp/wp-content/themes/jinjer-v6/images/kintai/function/rollup/rollup_introduction_1-1.png" alt="自動集計の画面イメージ">
+        <figcaption>図：自動集計機能の表示イメージ</figcaption>
+      </figure>
+
+      <figure>
+        <svg viewBox="0 0 800 300" style="background:#fff; border:1px solid #ccc; border-radius:4px; max-width:100%;">
+          <rect x="0" y="0" width="800" height="40" fill="#f4f6f8"/>
+          <text x="20" y="26" font-size="16" font-weight="bold" fill="#333">出勤簿データダウンロード</text>
+          <text x="40" y="80" font-size="14" fill="#555">フォーマット選択</text>
+          <rect x="200" y="60" width="300" height="30" fill="#fff" stroke="#ccc" rx="3"/>
+          <text x="210" y="80" font-size="14" fill="#333">標準フォーマット ▼</text>
+          <text x="40" y="130" font-size="14" fill="#555">出力期間</text>
+          <rect x="200" y="110" width="130" height="30" fill="#fff" stroke="#ccc" rx="3"/>
+          <text x="210" y="130" font-size="14" fill="#333">2023/10/01 📅</text>
+          <text x="345" y="130" font-size="14" fill="#333">〜</text>
+          <rect x="370" y="110" width="130" height="30" fill="#fff" stroke="#ccc" rx="3"/>
+          <text x="380" y="130" font-size="14" fill="#333">2023/10/31 📅</text>
+          <text x="40" y="180" font-size="14" fill="#555">打刻グループ選択</text>
+          <rect x="200" y="160" width="300" height="30" fill="#fff" stroke="#ccc" rx="3"/>
+          <text x="210" y="180" font-size="14" fill="#333">本社営業部 ▼</text>
+          <rect x="200" y="220" width="150" height="40" fill="#005A9E" rx="4"/>
+          <text x="275" y="245" font-size="14" fill="#fff" text-anchor="middle">ダウンロード</text>
+        </svg>
+        <figcaption>図：出勤簿データ（個別/グループ）の出力条件選択</figcaption>
+      </figure>
+
+      <figure>
+        <svg viewBox="0 0 800 200" style="background:#fff; border:1px solid #ccc; max-width:100%;">
+          <rect x="0" y="0" width="800" height="30" fill="#107c41"/>
+          <text x="10" y="20" font-size="14" fill="#fff" font-weight="bold">Excel - 出勤簿データ</text>
+          <g transform="translate(0, 30)">
+            <rect x="0" y="0" width="800" height="30" fill="#f3f2f1" stroke="#ccc"/>
+            <text x="10" y="20" font-size="12" fill="#333">日付</text>
+            <text x="100" y="20" font-size="12" fill="#333">出勤打刻</text>
+            <text x="200" y="20" font-size="12" fill="#333">退勤打刻</text>
+            <text x="300" y="20" font-size="12" fill="#333">出勤(まるめ後)</text>
+            <text x="420" y="20" font-size="12" fill="#333">退勤(まるめ後)</text>
+            <text x="540" y="20" font-size="12" fill="#333">総労働時間</text>
+            <text x="640" y="20" font-size="12" fill="#333">残業時間</text>
+          </g>
+          <g transform="translate(0, 60)">
+            <rect x="0" y="0" width="800" height="30" fill="#fff" stroke="#eee"/>
+            <text x="10" y="20" font-size="12" fill="#333">10/01(月)</text>
+            <text x="100" y="20" font-size="12" fill="#333">08:52</text>
+            <text x="200" y="20" font-size="12" fill="#333">18:13</text>
+            <text x="300" y="20" font-size="12" fill="#d9534f" font-weight="bold">09:00</text>
+            <text x="420" y="20" font-size="12" fill="#d9534f" font-weight="bold">18:00</text>
+            <text x="540" y="20" font-size="12" fill="#333">08:00</text>
+            <text x="640" y="20" font-size="12" fill="#333">00:00</text>
+          </g>
+          <g transform="translate(0, 90)">
+            <rect x="0" y="0" width="800" height="30" fill="#fafafa" stroke="#eee"/>
+            <text x="10" y="20" font-size="12" fill="#333">10/02(火)</text>
+            <text x="100" y="20" font-size="12" fill="#333">08:58</text>
+            <text x="200" y="20" font-size="12" fill="#333">19:35</text>
+            <text x="300" y="20" font-size="12" fill="#d9534f" font-weight="bold">09:00</text>
+            <text x="420" y="20" font-size="12" fill="#d9534f" font-weight="bold">19:30</text>
+            <text x="540" y="20" font-size="12" fill="#333">09:30</text>
+            <text x="640" y="20" font-size="12" fill="#333">01:30</text>
+          </g>
+        </svg>
+        <figcaption>図：出力後のExcelデータサンプル</figcaption>
+      </figure>
+
+      <h2>2. 残業の計算ルール</h2>
+      <div class="card">
+        <div class="card-title">💡 「法定内残業」はどう判定される？</div>
+        <p style="margin-top:0;">スケジュール外で働いた時の残業の付き方は、以下の2パターンから設定できます。</p>
+        <ul class="list">
+          <li><b>時間でみる：</b> その日の「トータル労働時間」が法定内か法定外かで判定。</li>
+          <li><b>時刻でみる：</b> 働いた「その時点」での労働時間が法定内に収まっているかで判定。</li>
+        </ul>
+      </div>
+
+      <figure>
+        <svg viewBox="0 0 800 160" style="background:#fff; border:1px solid #ccc; max-width:100%; border-radius:4px;">
+          <rect x="0" y="0" width="800" height="40" fill="#f4f6f8"/>
+          <text x="20" y="26" font-size="16" font-weight="bold" fill="#333">就業規則設定 ＞ 法定内残業時間の計上方法</text>
+          <circle cx="60" cy="80" r="7" fill="#005A9E"/>
+          <circle cx="60" cy="80" r="3" fill="#fff"/>
+          <text x="80" y="85" font-size="14" font-weight="bold" fill="#333">時間でみる（総労働時間で判定）</text>
+          <circle cx="60" cy="120" r="7" fill="#fff" stroke="#ccc"/>
+          <text x="80" y="125" font-size="14" fill="#555">時刻でみる（その時点の枠で判定）</text>
+        </svg>
+        <figcaption>図：残業の判定ロジック選択</figcaption>
+      </figure>
+
+      <h2>3. 「まるめ設定」の種類</h2>
+      <p>時間を切り捨て/切り上げする「まるめ」は主に4種類あります。</p>
+      <div class="card">
+        <ul class="list">
+          <li><b>日単位まるめ：</b> 毎日の打刻を「15分単位」などでまるめる。</li>
+          <li><b>月単位まるめ：</b> 1ヶ月のトータル労働時間をまるめる。</li>
+          <li><b>始業・終業まるめ：</b> 8:50に出社しても、スケジュールに合わせて「9:00」とする。</li>
+          <li><b>直行・直帰みなし：</b> 直行・直帰ボタンを押せば、スケジュールの時間を実績とする。</li>
+        </ul>
+      </div>
+
+      <figure>
+        <svg viewBox="0 0 800 180" style="background:#fff; border:1px solid #ccc; max-width:100%; border-radius:4px;">
+          <rect x="0" y="0" width="800" height="40" fill="#f4f6f8"/>
+          <text x="20" y="26" font-size="16" font-weight="bold" fill="#333">日単位まるめ設定</text>
+          <text x="40" y="80" font-size="14" fill="#555">管理単位</text>
+          <rect x="200" y="60" width="150" height="30" fill="#fff" stroke="#ccc" rx="3"/>
+          <text x="210" y="80" font-size="14" fill="#333">15分 ▼</text>
+          <text x="40" y="130" font-size="14" fill="#555">計算方法</text>
+          <rect x="200" y="110" width="150" height="30" fill="#fff" stroke="#ccc" rx="3"/>
+          <text x="210" y="130" font-size="14" fill="#333">切り捨て ▼</text>
+        </svg>
+        <figcaption>図：日単位まるめの設定箇所</figcaption>
+      </figure>
       
-      <div class="form-group">
-        <label for="companyName">会社名<span class="required">[必須]</span></label>
-        <input type="text" id="companyName" name="companyName" placeholder="PRONI株式会社" required>
+      <figure>
+        <svg viewBox="0 0 800 180" style="background:#fff; border:1px solid #ccc; max-width:100%; border-radius:4px;">
+          <rect x="0" y="0" width="800" height="40" fill="#f4f6f8"/>
+          <text x="20" y="26" font-size="16" font-weight="bold" fill="#333">直行・直帰みなし設定</text>
+          <text x="40" y="80" font-size="14" fill="#555">直行を始業時刻にみなす</text>
+          <rect x="280" y="65" width="40" height="20" fill="#005A9E" rx="10"/>
+          <circle cx="310" cy="75" r="8" fill="#fff"/>
+          <text x="335" y="80" font-size="14" fill="#333">設定する</text>
+          <text x="40" y="130" font-size="14" fill="#555">直帰を終業時刻にみなす</text>
+          <rect x="280" y="115" width="40" height="20" fill="#005A9E" rx="10"/>
+          <circle cx="310" cy="125" r="8" fill="#fff"/>
+          <text x="335" y="130" font-size="14" fill="#333">設定する</text>
+        </svg>
+        <figcaption>図：直行・直帰のみなし設定</figcaption>
+      </figure>
+
+      <!-- 記事下の誘導バナー（プレCTA） -->
+      <div class="cta-banner">
+        <h3>自社の就業規則に合うか、プロに聞いてみませんか？</h3>
+        <p>「うちの複雑なシフトや残業ルールでも設定できる？」<br>「今の運用から、どうスムーズに移行すればいい？」<br><br>そんな疑問に、jinjerの専門スタッフが<b>実際の操作画面をお見せしながら</b>個別にお答えします。</p>
+        <button class="btn-in-banner trigger-form-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          実際の画面の案内を受ける
+        </button>
       </div>
-
-      <div class="form-group">
-        <label for="name">氏名<span class="required">[必須]</span></label>
-        <input type="text" id="name" name="name" placeholder="山田一郎" required>
-      </div>
-
-      <div class="form-group">
-        <label for="tel">電話番号<span class="required">[必須]</span></label>
-        <input type="tel" id="tel" name="tel" placeholder="09012345678" maxlength="11" required>
-      </div>
-
-      <div class="form-group">
-        <label for="email">メールアドレス<span class="required">[必須]</span></label>
-        <p class="note">※会社用メールアドレスをご入力ください。</p>
-        <input type="email" id="email" name="email" placeholder="info@proni.co.jp" required>
-      </div>
-
-      <div class="form-group">
-        <label for="employeeSize">従業員規模<span class="required">[必須]</span></label>
-        <select id="employeeSize" name="employeeSize" required>
-          <option value="" disabled selected>選択してください</option>
-          <option value="1-9">1-9</option>
-          <option value="10-19">10-19</option>
-          <option value="20-29">20-29</option>
-          <option value="30-49">30-49</option>
-          <option value="50-99">50-99</option>
-          <option value="100-299">100-299</option>
-          <option value="300-499">300-499</option>
-          <option value="500-999">500-999</option>
-          <option value="1,000-">1,000-</option>
-        </select>
-      </div>
-
-      <button type="submit" class="submit-btn">同意して送信する</button>
-
-      <p class="terms-text">
-        この打ち合わせ調整サービスはPRONI株式会社により提供されています。<br>
-        PRONI<a href="https://imitsu.jp/terms/" target="_blank">利用規約</a>、<a href="https://www.proni.co.jp/privacy-policy/" target="_blank">プライバシーポリシー</a>に同意の上、送信してください。
-      </p>
-    </form>
+    </div>
   </div>
+
+  <!-- ===============================
+       2ページ目：ご案内フォーム（初期表示は非表示）
+       =============================== -->
+  <div id="page2" style="display: none;">
+    <header>
+      <h1>【無料】実際の画面でのご案内・ご相談</h1>
+      <p>貴社の課題に合わせて、最適な運用方法を実際の画面でご提案します</p>
+    </header>
+
+    <div class="container" style="max-width: 600px;">
+      <button id="back-btn" class="back-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        仕様サマリーに戻る
+      </button>
+
+      <p class="note" style="font-size: 0.95em; color: #444; margin-bottom: 25px;">
+        以下のフォームにお客様の情報を入力してください。<br>担当者より、ご案内の日程調整についてご連絡させていただきます。<br>まだ導入時期が決まっていなくても、お気軽にご相談ください。
+      </p>
+
+      <form action="https://script.google.com/macros/s/AKfycbxIfQ64xCq1_71OjfqHi0Q_rSzff7fc40v1hyMCuSOplFqzju1IwAaQPZ8fSo5VB5xwaA/exec" method="POST">
+        
+        <div class="form-group">
+          <label class="form-label" for="companyName">会社名<span class="required">[必須]</span></label>
+          <input type="text" id="companyName" name="companyName" placeholder="例：PRONI株式会社" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="name">ご担当者様名<span class="required">[必須]</span></label>
+          <input type="text" id="name" name="name" placeholder="例：山田 一郎" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="tel">電話番号<span class="required">[必須]</span></label>
+          <input type="tel" id="tel" name="tel" placeholder="例：09012345678（ハイフンなし）" maxlength="11" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">メールアドレス<span class="required">[必須]</span></label>
+          <p class="note">※会社用のメールアドレスをご入力ください。</p>
+          <input type="email" id="email" name="email" placeholder="例：info@proni.co.jp" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employeeSize">従業員規模<span class="required">[必須]</span></label>
+          <select id="employeeSize" name="employeeSize" required>
+            <option value="" disabled selected>選択してください</option>
+            <option value="1-9">1-9名</option>
+            <option value="10-19">10-19名</option>
+            <option value="20-29">20-29名</option>
+            <option value="30-49">30-49名</option>
+            <option value="50-99">50-99名</option>
+            <option value="100-299">100-299名</option>
+            <option value="300-499">300-499名</option>
+            <option value="500-999">500-999名</option>
+            <option value="1,000-">1,000名以上</option>
+          </select>
+        </div>
+
+        <button type="submit" class="submit-btn">同意して案内を申し込む</button>
+
+        <p class="terms-text">
+          このサービスはPRONI株式会社により提供されています。<br>
+          PRONI<a href="https://imitsu.jp/terms/" target="_blank">利用規約</a>、<a href="https://www.proni.co.jp/privacy-policy/" target="_blank">プライバシーポリシー</a>に同意の上、送信してください。
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===============================
+       フローティングCTAボタン
+       =============================== -->
+  <button id="cta-btn" class="floating-cta trigger-form-btn">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+    実際の画面の案内を受ける
+  </button>
+
+  <!-- ===============================
+       ページ切り替え用スクリプト
+       =============================== -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const formTriggers = document.querySelectorAll(".trigger-form-btn");
+      const ctaBtn = document.getElementById("cta-btn");
+      const backBtn = document.getElementById("back-btn");
+      const page1 = document.getElementById("page1");
+      const page2 = document.getElementById("page2");
+
+      // CTAボタン（複数）を押した時、フォームへ遷移
+      formTriggers.forEach(btn => {
+        btn.addEventListener("click", () => {
+          page1.style.display = "none";
+          page2.style.display = "block";
+          ctaBtn.style.display = "none"; // フォーム画面ではフローティングCTAを隠す
+          window.scrollTo(0, 0); // 画面の一番上にスクロール
+        });
+      });
+
+      // 戻るボタンを押した時（サマリーへ）
+      backBtn.addEventListener("click", () => {
+        page2.style.display = "none";
+        page1.style.display = "block";
+        ctaBtn.style.display = "flex"; // フローティングCTAを再表示
+        window.scrollTo(0, 0);
+      });
+    });
+  </script>
 
 </body>
 </html>
